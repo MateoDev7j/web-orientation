@@ -106,24 +106,33 @@ function handleOrientation(event) {
   const gamma = event.gamma;
   // Do stuff...
 }
+// 1. Cambiamos la función para que use 'mostrarOrientacion' que es la que escribe en tu HTML
 function onClick() {
-  if (typeof DeviceMotionEvent.requestPermission === 'function') {
-    // Handle iOS 13+ devices.
-    DeviceMotionEvent.requestPermission()
+  // Para orientación en iOS 13+, se debe pedir permiso específicamente a DeviceOrientationEvent
+  if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+    DeviceOrientationEvent.requestPermission()
       .then((state) => {
         if (state === 'granted') {
-          window.addEventListener('devicemotion', handleOrientation);
+          window.addEventListener('deviceorientation', mostrarOrientacion);
         } else {
-          console.error('Request to access the orientation was rejected');
+          console.error('El permiso para acceder a la orientación fue rechazado');
         }
       })
       .catch(console.error);
   } else {
-    // Handle regular non iOS 13+ devices.
-    window.addEventListener('devicemotion', handleOrientation);
+    // Dispositivos que no son iOS 13+ (Android y navegadores de escritorio compatibles)
+    window.addEventListener('deviceorientation', mostrarOrientacion);
   }
 }
-function mostrarOrientacion(e){
-    document.getElementById("contenedor-orientacion").innerHTML= e.alpha + " - " + e.beta;
+
+// 2. Esta función recibe el evento de orientación y actualiza tu DIV
+function mostrarOrientacion(e) {
+  // Validamos que los valores existan antes de pintar (algunos navegadores de PC devuelven null)
+  const alpha = e.alpha;
+  const beta = e.beta;
+  
+  document.getElementById("contenedor-orientacion").innerHTML = alpha + " - " + beta;
 }
-document.getElementById("contenedor-orientacion").addEventListener("click",onClick);
+
+// 3. Asignamos el evento de clic al contenedor para activar los permisos
+document.getElementById("contenedor-orientacion").addEventListener("click", onClick);
