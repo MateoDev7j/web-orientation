@@ -123,6 +123,7 @@ function onClick() {
     window.addEventListener('devicemotion', handleOrientation);
   }
 }
-function mostrarOrientacion(){
+function mostrarOrientacion(e){
     document.getElementById("contenedor-orientacion").innerHTML= e.alpha + " - " + e.beta;
 }
+document.getElementById("contenedor-orientacion").addEventListener("click",onClick);
